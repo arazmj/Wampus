@@ -15,8 +15,8 @@ public class KnowledgeBase<L> {
         repo.add(new HashSet<> (Arrays.asList(stateLiteral)));
     }
 
-    public void add(Collection<L> stateLiteral) {
-        repo.add(new HashSet<> (Arrays.asList(stateLiteral)));
+    public void add(List<L> clause) {
+        repo.add(new HashSet<> (clause));
     }
 
     @Override
@@ -33,5 +33,21 @@ public class KnowledgeBase<L> {
             sb.append(") ");
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KnowledgeBase<?> that = (KnowledgeBase<?>) o;
+
+        return repo.equals(that.repo);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return repo.hashCode();
     }
 }
