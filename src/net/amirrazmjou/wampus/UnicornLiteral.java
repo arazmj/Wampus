@@ -16,18 +16,8 @@ public class UnicornLiteral implements Literal {
     }
 
     @Override
-    public Predicate getState() {
-        return null;
-    }
-
-    @Override
     public UnicornLiteral getNegated() {
         return new UnicornLiteral(state, negated);
-    }
-
-    @Override
-    public List<Literal> getImplications() {
-        return null;
     }
 
     @Override

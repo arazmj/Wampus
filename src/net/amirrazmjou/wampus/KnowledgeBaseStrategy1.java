@@ -12,6 +12,10 @@ public class KnowledgeBaseStrategy1<L extends Literal> extends KnowledgeBase<L> 
         this.repo = kb.repo;
     }
 
+    public KnowledgeBaseStrategy1() {
+
+    }
+
     public boolean ask(L literal) {
         // the set of repo in the CNF representation of KB ∧ ¬α
         LinkedList<HashSet<L>> clauses = new LinkedList<>(repo);

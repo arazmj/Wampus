@@ -1,6 +1,7 @@
 package net.amirrazmjou.wampus;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,12 +10,14 @@ import java.util.List;
  */
 
 final public class WampusLiteral implements Literal {
-    final private Predicate state;
+    public enum Wampus { BREEZE, PIT };
+
+    final private Wampus state;
     final private int row;
     final private int column;
     final private boolean negated;
 
-    public WampusLiteral(Predicate s, int row, int column, boolean positive) {
+    public WampusLiteral(Wampus s, int row, int column, boolean positive) {
         this.row = row;
         this.column = column;
         this.state = s;
@@ -22,13 +25,8 @@ final public class WampusLiteral implements Literal {
     }
 
     @Override
-    public Predicate getState() {
-        return state;
-    }
-
-    @Override
-    public Literal getNegated() {
-        return new WampusLiteral (state, row, column, !negated);
+    public WampusLiteral getNegated() {
+        return new WampusLiteral (state, row, column, negated);
     }
 
     public int getRow() {
@@ -45,34 +43,18 @@ final public class WampusLiteral implements Literal {
                 negated ? "!" : "", state.toString(), row, column);
     }
 
-    @Override
-    public List<Literal> getImplications() {
-        if (!state.isSmelly())
-            return Arrays.asList(
-                    new WampusLiteral(
-                            state.getImplication(),
-                            getRow(),
-                            getColumn(),
-                            true));
-
+    public List<WampusLiteral> getImplications() {
         int[] cs = {1, -1, 0, 0};
         int[] rs = {0, 0, 1, -1};
-
-        List<Literal> clause = new LinkedList<>();
+        List<WampusLiteral> clause = new LinkedList<>();
 
         for (int i = 0; i < Math.min(cs.length, rs.length); i++) {
             int column = getColumn() + cs[i];
             int row = getRow() + rs[i];
-            if (row >= 0 && column >= 0) {
-                Predicate implication = state.getImplication();
-                Literal e1 = new WampusLiteral(implication, row, column, true);
+            if (row > 0 && column > 0) {
+                Wampus implication = state == Wampus.BREEZE ? Wampus.PIT : Wampus.BREEZE;
+                WampusLiteral e1 = new WampusLiteral(implication, row, column, true);
                 clause.add(e1);
-
-                Predicate implicationNot = state.getImplicationNot();
-                if (implicationNot != null) {
-                    Literal e2 = new WampusLiteral(implicationNot, row, column, false);
-                    clause.add(e2);
-                }
             }
         }
         return clause;

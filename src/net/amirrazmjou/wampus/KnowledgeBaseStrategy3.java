@@ -28,13 +28,8 @@ public class KnowledgeBaseStrategy3<L extends Literal> extends KnowledgeBase<L> 
         public int compareTo(PriorityClause o) {
             if (this.priority > o.priority)
                 return 1;
-            else if (this.priority == o.priority) {
-                if (this.clause.size() < o.clause.size())
-                    return 1;
-                else if (this.clause.size() == o.clause.size())
-                    return 0;
-                else return -1;
-            }
+            else if (this.priority == o.priority)
+                return 0;
             else return -1;
         }
     }

@@ -7,9 +7,7 @@ import java.util.List;
  */
 
 public interface Literal {
-    Predicate getState();
-
     Literal getNegated();
 
-    List<Literal> getImplications();
+   // List<Literal> getImplications();
 }
