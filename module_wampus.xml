@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_wampus" default="compile.module.wampus">
+  <dirname property="module.wampus.basedir" file="${ant.file.module_wampus}"/>
+  
+  <property name="module.jdk.home.wampus" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.wampus" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.wampus" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.wampus" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="wampus.output.dir" value="${module.wampus.basedir}/out/production/Wampus"/>
+  <property name="wampus.testoutput.dir" value="${module.wampus.basedir}/out/test/Wampus"/>
+  
+  <path id="wampus.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="wampus.module.production.classpath">
+    <path refid="${module.jdk.classpath.wampus}"/>
+    <pathelement location="${basedir}/lib/junit-4.7.jar"/>
+  </path>
+  
+  <path id="wampus.runtime.production.module.classpath">
+    <pathelement location="${wampus.output.dir}"/>
+    <pathelement location="${basedir}/lib/junit-4.7.jar"/>
+  </path>
+  
+  <path id="wampus.module.classpath">
+    <path refid="${module.jdk.classpath.wampus}"/>
+    <pathelement location="${wampus.output.dir}"/>
+    <pathelement location="${basedir}/lib/junit-4.7.jar"/>
+  </path>
+  
+  <path id="wampus.runtime.module.classpath">
+    <pathelement location="${wampus.testoutput.dir}"/>
+    <pathelement location="${wampus.output.dir}"/>
+    <pathelement location="${basedir}/lib/junit-4.7.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.wampus">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.wampus">
+    <patternset refid="excluded.from.module.wampus"/>
+  </patternset>
+  
+  <path id="wampus.module.sourcepath">
+    <dirset dir="${module.wampus.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.wampus" depends="compile.module.wampus.production,compile.module.wampus.tests" description="Compile module Wampus"/>
+  
+  <target name="compile.module.wampus.production" depends="register.custom.compilers" description="Compile module Wampus; production classes">
+    <mkdir dir="${wampus.output.dir}"/>
+    <javac2 destdir="${wampus.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.wampus}/javac">
+      <compilerarg line="${compiler.args.wampus}"/>
+      <bootclasspath refid="wampus.module.bootclasspath"/>
+      <classpath refid="wampus.module.production.classpath"/>
+      <src refid="wampus.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.wampus"/>
+    </javac2>
+    
+    <copy todir="${wampus.output.dir}">
+      <fileset dir="${module.wampus.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.wampus.tests" depends="register.custom.compilers,compile.module.wampus.production" description="compile module Wampus; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.wampus" description="cleanup module">
+    <delete dir="${wampus.output.dir}"/>
+    <delete dir="${wampus.testoutput.dir}"/>
+  </target>
+</project>
